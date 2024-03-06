@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:paddingTop="5dp"
+    android:paddingBottom="5dp">
+
+    <ImageView
+        android:id="@+id/item_iv_head"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:scaleType="fitCenter"
+        android:src="@mipmap/home_user_head_icon"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="1dp"
+        android:layout_marginLeft="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <TextView
+        android:id="@+id/item_tv_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#0075B6"
+        android:textSize="@dimen/general_big_size"
+        android:layout_marginLeft="12dp"
+        app:layout_constraintLeft_toRightOf="@id/item_iv_head"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <com.hjq.shape.view.ShapeTextView
+        android:id="@+id/stv_look_detail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:shape_radius="5dp"
+        app:shape_solidColor="#53BC51"
+        android:paddingHorizontal="10dp"
+        android:paddingVertical="3dp"
+        android:layout_marginLeft="10dp"
+        android:textSize="@dimen/general_small_size"
+        android:textColor="@color/white"
+        android:gravity="center"
+        android:text="查看详情"
+        app:layout_constraintLeft_toRightOf="@id/item_tv_name"
+        app:layout_constraintTop_toTopOf="@id/item_tv_name"
+        app:layout_constraintBottom_toBottomOf="@id/item_tv_name"/>
+
+    <TextView
+        android:id="@+id/item_tv_phone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#333333"
+        android:textSize="@dimen/general_big_size"
+        android:layout_marginTop="2dp"
+        app:layout_constraintLeft_toLeftOf="@id/item_tv_name"
+        app:layout_constraintTop_toBottomOf="@id/item_tv_name"/>
+
+    <TextView
+        android:id="@+id/item_consume_count"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#555555"
+        android:textSize="@dimen/general_small_size"
+        tools:text="交易0笔"
+        android:layout_marginLeft="18dp"
+        android:layout_marginBottom="1dp"
+        app:layout_constraintLeft_toRightOf="@id/item_tv_phone"
+        app:layout_constraintBottom_toBottomOf="@id/item_tv_phone"/>
+
+    <TextView
+        android:id="@+id/item_recent_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#333333"
+        android:textSize="@dimen/general_big_size"
+        tools:text="最近消费时间"
+        android:layout_marginTop="2dp"
+        app:layout_constraintLeft_toLeftOf="@id/item_tv_name"
+        app:layout_constraintTop_toBottomOf="@id/item_tv_phone"/>
+
+    <ImageView
+        android:id="@+id/iv_next_icon"
+        android:layout_width="15dp"
+        android:layout_height="15dp"
+        android:scaleType="fitXY"
+        android:src="@mipmap/item_next_icon"
+        android:layout_marginRight="10dp"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/item_iv_head"
+        app:layout_constraintBottom_toBottomOf="@id/item_iv_head"/>
+
+    <TextView
+        android:id="@+id/item_tv_integral"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#555555"
+        android:textSize="@dimen/general_big_size"
+        android:layout_marginRight="5dp"
+        app:layout_constraintRight_toLeftOf="@id/iv_next_icon"
+        app:layout_constraintTop_toTopOf="@id/item_tv_name"
+        app:layout_constraintBottom_toBottomOf="@id/item_recent_time"/>
+</androidx.constraintlayout.widget.ConstraintLayout>

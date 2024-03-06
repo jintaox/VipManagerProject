@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".activity.IntegralDetailActivity">
+
+    <include android:id="@+id/title" layout="@layout/common_title_layout"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#4A62F1"
+            android:textSize="@dimen/general_big_size"
+            android:text="当前消费:"/>
+
+        <TextView
+            android:id="@+id/tv_user_integral"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#333333"
+            android:textSize="@dimen/general_big_size"/>
+        <View
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="10dp"/>
+        <com.hjq.shape.view.ShapeTextView
+            android:id="@+id/stv_select_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="查询月份明细"
+            android:paddingTop="3dp"
+            android:paddingBottom="3dp"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:textSize="@dimen/general_middle_size"
+            android:textColor="@color/white"
+            app:shape_radius="3dp"
+            app:shape_solidColor="#2CBF9F"/>
+    </LinearLayout>
+
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp">
+
+        <me.jingbin.library.ByRecyclerView
+            android:id="@+id/rv_integral_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+        <TextView
+            android:id="@+id/tv_tip_null"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/general_middle_size"
+            android:textColor="#666666"
+            android:text="当前月份没有记录"
+            android:visibility="gone"
+            android:layout_marginTop="60dp"
+            android:layout_gravity="center_horizontal"/>
+    </FrameLayout>
+
+</LinearLayout>

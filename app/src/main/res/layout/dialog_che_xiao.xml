@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/cl_root_layout">
+
+    <View
+        android:id="@+id/gl_center_left"
+        android:layout_width="1dp"
+        android:layout_height="match_parent"
+        app:layout_constraintHorizontal_bias="0.38"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"/>
+    <View
+        android:id="@+id/gl_center_right"
+        android:layout_width="1dp"
+        android:layout_height="match_parent"
+        app:layout_constraintHorizontal_bias="0.81"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"/>
+
+    <View
+        android:id="@+id/gl_center_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        app:layout_constraintVertical_bias="0.46"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <com.hjq.shape.layout.ShapeLinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:shape_radius="12dp"
+        app:shape_solidColor="@color/white"
+        android:layout_marginBottom="15dp"
+        android:layout_marginHorizontal="2dp"
+        app:layout_constraintBottom_toBottomOf="@id/gl_center_bottom"
+        app:layout_constraintLeft_toLeftOf="@id/gl_center_left"
+        app:layout_constraintRight_toRightOf="@id/gl_center_right">
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:gravity="center_horizontal"
+            android:text="撤销消费记录"
+            android:textColor="#000000"
+            android:textSize="@dimen/general_big_size"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tv_desc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="#343434"
+            android:textSize="@dimen/general_middle_size"
+            android:text=""
+            android:gravity="center_horizontal"
+            android:layout_marginTop="6dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"/>
+
+        <com.hjq.shape.view.ShapeEditText
+            android:id="@+id/et_input_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="80dp"
+            android:layout_marginTop="10dp"
+            android:paddingVertical="5dp"
+            android:gravity="center_horizontal"
+            android:hint="请输入管理员密码"
+            android:inputType="numberPassword"
+            android:maxLength="8"
+            android:background="@null"
+            android:textColor="#4A62F1"
+            android:textSize="@dimen/general_small_size"
+            app:shape_radius="6dp"
+            app:shape_solidColor="#88A6DCFF"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="20dp"
+            android:orientation="horizontal">
+
+            <com.hjq.shape.view.ShapeTextView
+                android:id="@+id/stv_cancel"
+                android:layout_width="0dp"
+                android:layout_height="35dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="取消"
+                android:textColor="@color/white"
+                android:textSize="@dimen/general_middle_size"
+                app:shape_radius="6dp"
+                app:shape_solidColor="#A0A0A0" />
+
+            <com.hjq.shape.view.ShapeTextView
+                android:id="@+id/stv_confirm"
+                android:layout_width="0dp"
+                android:layout_height="35dp"
+                android:layout_marginLeft="6dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="确定"
+                android:textColor="@color/white"
+                android:textSize="@dimen/general_middle_size"
+                app:shape_radius="6dp"
+                app:shape_solidColor="#277F29" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="15dp" />
+
+    </com.hjq.shape.layout.ShapeLinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

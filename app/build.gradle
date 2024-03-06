@@ -1,0 +1,104 @@
+plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
+    id 'kotlin-kapt'
+    id 'org.greenrobot.greendao'
+}
+
+android {
+    compileSdk 31
+
+    defaultConfig {
+        applicationId "com.jintao.vipmanager"
+        minSdk 21
+        targetSdk 31
+        versionCode 1
+        versionName "1.0.0"
+        ndk {
+            abiFilters 'x86_64', 'arm64-v8a' ,'x86', 'armeabi-v7a'
+        }
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    signingConfigs {
+        release {
+            storeFile file('test.jks')
+            storePassword '123456'
+            keyAlias 'test'
+            keyPassword '123456'
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            shrinkResources true
+            signingConfig signingConfigs.release
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+
+    buildFeatures {
+        viewBinding = true
+    }
+
+    greendao {
+        schemaVersion 1
+        targetGenDir 'src/main/java'
+        daoPackage 'com.jintao.vipmanager.database.dao'
+    }
+
+    applicationVariants.all { variant ->
+        variant.outputs.all {
+            if ('release' == variant.buildType.name) {
+                outputFileName = "会员管理_v${variant.versionName}_${releaseTime()}.apk"
+            }
+        }
+    }
+}
+
+dependencies {
+
+    implementation 'androidx.core:core-ktx:1.7.0'
+    implementation 'androidx.appcompat:appcompat:1.4.0'
+    implementation 'com.google.android.material:material:1.4.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
+    testImplementation 'junit:junit:4.+'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+
+    implementation 'com.squareup.okhttp3:okhttp:3.14.7'
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.14.7'
+
+    implementation 'com.aliyun.dpa:oss-android-sdk:2.9.11'
+
+    implementation 'com.google.code.gson:gson:2.8.9'
+    implementation 'com.github.getActivity:GsonFactory:5.2'
+    implementation 'com.github.getActivity:ShapeView:8.2'
+    implementation 'com.github.getActivity:ToastUtils:10.0'
+    implementation 'com.github.getActivity:EasyHttp:12.0'
+
+    implementation 'org.greenrobot:greendao:3.3.0'
+
+    implementation 'top.zibin:Luban:1.1.8'
+
+    implementation("io.coil-kt:coil:2.2.2")
+
+    implementation 'com.tencent:mmkv-static:1.2.10'
+
+    implementation 'com.gyf.immersionbar:immersionbar:3.0.0'
+    implementation 'com.github.li-xiaojun:XPopup:2.6.7'
+    implementation 'com.github.li-xiaojun:XPopupExt:1.0.0'
+    implementation 'com.github.youlookwhat:ByRecyclerView:1.3.6'
+}
+
+def releaseTime() {
+    return new Date().format("yyyyMMdd_HHmmss", TimeZone.getDefault());
+}

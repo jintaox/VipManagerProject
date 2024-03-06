@@ -1,0 +1,31 @@
+<resources>
+    <string name="app_name">会员管理</string>
+
+    <string name="common_phone_input_hint">请输入手机号码</string>
+    <string name="common_phone_input_error">手机号输入不正确</string>
+
+    <string name="common_code_input_hint">请输入验证码</string>
+    <string name="common_code_send">发送验证码</string>
+    <string name="common_code_send_hint">验证码已发送，请注意查收</string>
+    <string name="common_code_error_hint">验证码错误，请检查输入</string>
+
+    <string name="common_step_next">下一步</string>
+    <string name="common_step_complete">完成</string>
+    <string name="common_step_commit">提交</string>
+
+    <!-- 登录 -->
+    <string name="login_register">注册</string>
+    <string name="login_forget">忘记密码？</string>
+    <string name="login_text">登录</string>
+
+    <string name="login_other">其他登录方式</string>
+
+    <!-- 注册 -->
+    <string name="register_title">注册</string>
+    <string name="register_hint">手机号仅用于登录和保护账号安全</string>
+    <string name="register_password_hint1">设置6&#8211;18位登录密码</string>
+    <string name="register_password_hint2">请再次输入一次密码</string>
+
+    <!-- 设置 -->
+    <string name="setting_title">设置</string>
+</resources>

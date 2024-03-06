@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".activity.ConvertGoodsActivity">
+    <include android:id="@+id/title" layout="@layout/common_title_layout"/>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingVertical="5dp"
+        android:layout_marginTop="5dp"
+        android:background="#CDCDCD">
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/gl_center_linedew"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.3"/>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/gl_center_linefewfe"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.68"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:text="姓名："
+                android:textColor="#FF4A50"
+                android:textSize="@dimen/general_middle_size" />
+
+            <TextView
+                android:id="@+id/tv_user_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="3dp"
+                android:textColor="#555555"
+                android:textSize="@dimen/general_middle_size" />
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="@id/gl_center_linedew">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:text="手机号："
+                android:textColor="#FF4A50"
+                android:textSize="@dimen/general_middle_size" />
+
+            <TextView
+                android:id="@+id/tv_user_phone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="3dp"
+                android:textColor="#555555"
+                android:textSize="@dimen/general_middle_size" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="@id/gl_center_linefewfe">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:text="可用积分："
+                android:textColor="#FF4A50"
+                android:textSize="@dimen/general_middle_size" />
+
+            <TextView
+                android:id="@+id/tv_user_jifen"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="3dp"
+                android:textColor="#555555"
+                android:textSize="@dimen/general_middle_size" />
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="20dp"
+        android:layout_marginHorizontal="30dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="兑换积分:"
+            android:textSize="@dimen/general_big_size"
+            android:textColor="#666666"/>
+
+        <EditText
+            android:id="@+id/et_input_jifen"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="8dp"
+            android:layout_marginLeft="3dp"
+            android:maxLength="6"
+            android:inputType="number"
+            android:textSize="@dimen/general_big_size"
+            android:textColor="#333333"
+            android:hint="请输入需要兑换的积分"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="12dp"
+        android:layout_marginHorizontal="30dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="兑换说明:"
+            android:textSize="@dimen/general_big_size"
+            android:textColor="#666666"/>
+
+        <EditText
+            android:id="@+id/et_input_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/general_big_size"
+            android:textColor="#333333"
+            android:maxLength="50"
+            android:paddingLeft="8dp"
+            android:layout_marginLeft="3dp"
+            android:hint="兑换说明可不填"/>
+    </LinearLayout>
+
+    <View
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+
+    <com.hjq.shape.view.ShapeTextView
+        android:id="@+id/stv_submit_user"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:gravity="center"
+        android:text="兑 换"
+        android:textColor="@color/white"
+        android:textSize="@dimen/general_big_size"
+        android:textStyle="bold"
+        android:layout_marginHorizontal="50dp"
+        android:layout_marginBottom="60dp"
+        app:shape_radius="8sp"
+        app:shape_solidColor="#2CBF9F"/>
+
+</LinearLayout>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".activity.ChangeNameActivity">
+
+    <include android:id="@+id/title" layout="@layout/common_title_layout"/>
+
+    <LinearLayout
+        android:id="@+id/ll_show_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <com.jintao.vipmanager.myview.ClearEditText
+            android:id="@+id/et_login_name"
+            style="@style/EditTextStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="30dp"
+            android:layout_marginTop="20dp"
+            android:textSize="@dimen/general_big_size"
+            android:hint="请输入商家名称"
+            android:imeOptions="actionDone"
+            android:maxLength="8"
+            android:singleLine="true" />
+
+        <View
+            style="@style/HorizontalLineStyle"
+            android:layout_marginHorizontal="40dp" />
+    </LinearLayout>
+
+    <com.hjq.shape.view.ShapeTextView
+        android:id="@+id/stv_submit_user"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:gravity="center"
+        android:text="确定"
+        android:textColor="@color/white"
+        android:textSize="@dimen/general_big_size"
+        android:textStyle="bold"
+        android:layout_marginHorizontal="50dp"
+        android:layout_marginTop="80dp"
+        app:shape_radius="8sp"
+        app:shape_solidColor="#2CBF9F"/>
+</LinearLayout>

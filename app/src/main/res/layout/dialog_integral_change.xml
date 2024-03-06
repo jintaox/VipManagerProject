@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
+    <View
+        android:id="@+id/view_kongbai1"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1.8"/>
+    <com.hjq.shape.layout.ShapeLinearLayout
+        android:layout_width="0dp"
+        android:layout_weight="2"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="60dp"
+        app:shape_radius="12dp"
+        app:shape_solidColor="@color/white">
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:gravity="center_horizontal"
+            android:text="修改消费金额"
+            android:textColor="#000000"
+            android:textSize="@dimen/general_big_size"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/et_input_amount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginRight="20dp"
+            android:gravity="center_horizontal"
+            android:hint="请输入金额"
+            android:inputType="numberDecimal"
+            android:maxLength="25"
+            android:textColor="#4A62F1"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="20dp"
+            android:orientation="horizontal">
+
+            <com.hjq.shape.view.ShapeTextView
+                android:id="@+id/stv_cancel"
+                android:layout_width="0dp"
+                android:layout_height="35dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="取消"
+                android:textColor="@color/white"
+                android:textSize="@dimen/general_middle_size"
+                app:shape_radius="6dp"
+                app:shape_solidColor="#A0A0A0" />
+
+            <com.hjq.shape.view.ShapeTextView
+                android:id="@+id/stv_reduce_number"
+                android:layout_width="0dp"
+                android:layout_height="35dp"
+                android:layout_marginLeft="6dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="减去"
+                android:textColor="@color/white"
+                android:textSize="@dimen/general_middle_size"
+                app:shape_radius="6dp"
+                app:shape_solidColor="#FF5E00" />
+
+            <com.hjq.shape.view.ShapeTextView
+                android:id="@+id/stv_add_number"
+                android:layout_width="0dp"
+                android:layout_height="35dp"
+                android:layout_marginLeft="6dp"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="增加"
+                android:textColor="@color/white"
+                android:textSize="@dimen/general_middle_size"
+                app:shape_radius="6dp"
+                app:shape_solidColor="#277F29" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="15dp" />
+    </com.hjq.shape.layout.ShapeLinearLayout>
+    <View
+        android:id="@+id/view_kongbai2"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="0.9"/>
+</LinearLayout>

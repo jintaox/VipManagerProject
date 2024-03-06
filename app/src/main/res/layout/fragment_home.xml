@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="38dp"
+        android:background="#13BEFF">
+        <ImageView
+            android:id="@+id/iv_title_person"
+            android:layout_width="38dp"
+            android:layout_height="38dp"
+            android:padding="8dp"
+            android:src="@mipmap/title_person_icon"
+            android:scaleType="fitXY"
+            android:layout_marginLeft="10dp"
+            android:layout_centerVertical="true"/>
+
+        <TextView
+            android:id="@+id/tv_title_content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:text="会员管理"
+            android:textColor="@color/white"
+            android:textSize="@dimen/title_text_size"
+            android:textStyle="bold"
+            android:layout_centerInParent="true"/>
+
+        <ImageView
+            android:id="@+id/iv_title_right"
+            android:layout_width="38dp"
+            android:layout_height="38dp"
+            android:padding="8dp"
+            android:src="@mipmap/home_add_user_icon"
+            android:scaleType="fitXY"
+            android:layout_marginRight="10dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"/>
+
+        <Button
+            android:id="@+id/btn_add_user"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="生成网名"
+            android:visibility="gone"
+            android:layout_marginRight="60dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"/>
+    </RelativeLayout>
+    <com.jintao.vipmanager.myview.ClearEditText
+        android:id="@+id/cet_input_msg"
+        android:layout_width="match_parent"
+        android:layout_height="38dp"
+        android:background="@drawable/input_search_message_shape"
+        android:gravity="center"
+        android:textSize="@dimen/general_big_size"
+        android:textColor="#333333"
+        android:maxLength="11"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:inputType="number"
+        android:hint="输入姓名或手机号(支持后四位)"
+        android:layout_marginTop="8dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"/>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="8dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp">
+
+        <me.jingbin.library.ByRecyclerView
+            android:id="@+id/rv_user_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+        <TextView
+            android:id="@+id/tv_tip_null"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/general_big_size"
+            android:textColor="#666666"
+            android:text="搜索的会员不存在"
+            android:visibility="gone"
+            android:layout_marginTop="60dp"
+            android:layout_gravity="center_horizontal"/>
+    </FrameLayout>
+
+</LinearLayout>

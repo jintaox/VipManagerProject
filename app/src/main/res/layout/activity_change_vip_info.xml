@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".activity.ChangeVipInfoActivity">
+
+    <include android:id="@+id/title" layout="@layout/common_title_layout"/>
+
+    <RelativeLayout
+        android:id="@+id/rl_user_name"
+        android:layout_width="match_parent"
+        android:layout_height="38dp"
+        android:layout_marginTop="25dp"
+        android:layout_marginHorizontal="30dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="会员名称"
+            android:textSize="@dimen/general_big_size"
+            android:textColor="@color/black"
+            android:layout_marginLeft="15dp"
+            android:layout_centerVertical="true"/>
+
+        <EditText
+            android:id="@+id/et_user_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/general_big_size"
+            android:textColor="#555555"
+            android:hint="请输入会员名称"
+            android:gravity="right"
+            android:background="@null"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:maxLength="10"
+            android:paddingRight="15dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"/>
+        <View style="@style/HorizontalLineStyle"/>
+        <View style="@style/HorizontalLineStyle"
+            android:layout_alignParentBottom="true"/>
+    </RelativeLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="38dp"
+        android:layout_marginHorizontal="30dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/general_big_size"
+            android:text="手机号"
+            android:textColor="@color/black"
+            android:layout_marginLeft="15dp"
+            android:layout_centerVertical="true"/>
+
+        <EditText
+            android:id="@+id/et_input_phone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="8dp"
+            android:layout_marginLeft="3dp"
+            android:maxLength="13"
+            android:inputType="number"
+            android:textSize="@dimen/general_big_size"
+            android:textColor="#555555"
+            android:hint="请输入手机号码"
+            android:gravity="right"
+            android:background="@null"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:paddingRight="15dp"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"/>
+
+        <View style="@style/HorizontalLineStyle"
+            android:layout_alignParentBottom="true"/>
+    </RelativeLayout>
+
+    <RadioGroup
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="6dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp">
+        <RadioButton
+            android:id="@+id/rb_nan_select"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="true"
+            android:text="男"
+            android:layout_marginLeft="10dp"/>
+
+        <RadioButton
+            android:id="@+id/rb_nv_select"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="女"
+            android:layout_marginLeft="30dp"/>
+    </RadioGroup>
+
+    <View
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+
+    <com.hjq.shape.view.ShapeTextView
+        android:id="@+id/stv_submit_user"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:gravity="center"
+        android:text="保存设置"
+        android:textColor="@color/white"
+        android:textSize="@dimen/general_big_size"
+        android:textStyle="bold"
+        android:layout_marginHorizontal="50dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="60dp"
+        app:shape_radius="8sp"
+        app:shape_solidColor="#2CBF9F"/>
+</LinearLayout>
