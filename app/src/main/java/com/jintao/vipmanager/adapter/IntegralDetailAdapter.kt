@@ -24,33 +24,34 @@ class IntegralDetailAdapter(var consumeList:List<DbUserConsumeInfo>): RecyclerVi
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val userConsumeInfo = consumeList.get(position)
-        if (userConsumeInfo.consumeIntegral!=0f) {
-            if (userConsumeInfo.consumeType) {
-                holder.itemBind.itemTvIntegral.setText("积分 +"+GeneralUtils.getInstence().formatAmount(userConsumeInfo.consumeIntegral))
+        if (userConsumeInfo.getConsumeIntegral()!=0f) {
+            if (userConsumeInfo.getConsumeType() == 1) {
+                holder.itemBind.itemTvIntegral.setText("积分 +"+GeneralUtils.getInstence().formatAmount(userConsumeInfo.getConsumeIntegral()))
                 holder.itemBind.itemTvIntegral.setTextColor(Color.parseColor("#277F29"))
             }else {
-                holder.itemBind.itemTvIntegral.setText("积分 -"+GeneralUtils.getInstence().formatAmount(userConsumeInfo.consumeIntegral))
+                holder.itemBind.itemTvIntegral.setText("积分 -"+GeneralUtils.getInstence().formatAmount(userConsumeInfo.getConsumeIntegral()))
                 holder.itemBind.itemTvIntegral.setTextColor(Color.parseColor("#FF5E00"))
             }
         }else {
-            holder.itemBind.itemTvIntegral.setText("积分   "+GeneralUtils.getInstence().formatAmount(userConsumeInfo.consumeIntegral))
+            holder.itemBind.itemTvIntegral.setText("积分   "+GeneralUtils.getInstence().formatAmount(userConsumeInfo.getConsumeIntegral()))
             holder.itemBind.itemTvIntegral.setTextColor(Color.BLACK)
         }
-        if (userConsumeInfo.consumeAmount!=0f) {
-            if (userConsumeInfo.consumeType) {
-                holder.itemBind.itemTvAmount.setText("金额 +"+GeneralUtils.getInstence().formatAmount(userConsumeInfo.consumeAmount))
+        val xuhao = (position + 1).toString()
+        if (userConsumeInfo.getConsumeAmount()!=0f) {
+            if (userConsumeInfo.getConsumeType() == 1) {
+                holder.itemBind.itemTvAmount.setText(xuhao+"、 金额 +"+GeneralUtils.getInstence().formatAmount(userConsumeInfo.getConsumeAmount()))
                 holder.itemBind.itemTvAmount.setTextColor(Color.parseColor("#277F29"))
             }else {
-                holder.itemBind.itemTvAmount.setText("金额 -"+GeneralUtils.getInstence().formatAmount(userConsumeInfo.consumeAmount))
+                holder.itemBind.itemTvAmount.setText(xuhao+"、 金额 -"+GeneralUtils.getInstence().formatAmount(userConsumeInfo.getConsumeAmount()))
                 holder.itemBind.itemTvAmount.setTextColor(Color.parseColor("#FF5E00"))
             }
         }else {
-            holder.itemBind.itemTvAmount.setText("金额   "+GeneralUtils.getInstence().formatAmount(userConsumeInfo.consumeAmount))
+            holder.itemBind.itemTvAmount.setText(xuhao+"、 金额   "+GeneralUtils.getInstence().formatAmount(userConsumeInfo.getConsumeAmount()))
             holder.itemBind.itemTvAmount.setTextColor(Color.BLACK)
         }
-        holder.itemBind.itemTvBili.setText(userConsumeInfo.converRatio)
-        holder.itemBind.itemTvContent.setText(userConsumeInfo.content)
-        holder.itemBind.itemTvTime.setText(userConsumeInfo.consumeTime)
+        holder.itemBind.itemTvBili.setText(userConsumeInfo.getConverRatio())
+        holder.itemBind.itemTvContent.setText(userConsumeInfo.getContent())
+        holder.itemBind.itemTvTime.setText(userConsumeInfo.getConsumeTime())
         holder.itemView.setOnTouchListener(object :View.OnTouchListener{
             override fun onTouch(v: View?, event: MotionEvent?): Boolean {
                 if (event!=null) {

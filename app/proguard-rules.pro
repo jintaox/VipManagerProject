@@ -71,15 +71,6 @@
 -keep class com.gyf.immersionbar.** { *; }
 -keep class me.jingbin.library.** { *; }
 
-#GreenDAO数据库
--keepclassmembers class * extends org.greenrobot.greendao.AbstractDao {
-public static java.lang.String TABLENAME;
-}
--keep class **$Properties { *; }
-
-# If you DO use SQLCipher:
--keep class org.greenrobot.greendao.database.SqlCipherEncryptedHelper { *; }
-
 -dontwarn com.tencent.bugly.**
 -keep public class com.tencent.bugly.**{*;}
 

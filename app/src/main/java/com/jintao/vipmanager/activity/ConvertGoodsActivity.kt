@@ -1,33 +1,42 @@
 package com.jintao.vipmanager.activity
 
 import android.text.TextUtils
+import androidx.lifecycle.lifecycleScope
+import com.drhkj.pialn.listener.OnPictureUploadListener
+import com.hjq.gson.factory.GsonFactory
 import com.hjq.toast.ToastUtils
+import com.jintao.vipmanager.MyApplication
 import com.jintao.vipmanager.base.BaseActivity
+import com.jintao.vipmanager.bean.UserOperateRecordInfo
+import com.jintao.vipmanager.database.DatabaseRepository
 import com.jintao.vipmanager.database.bean.DbConvertGoodsInfo
 import com.jintao.vipmanager.database.bean.DbVipUserInfo
-import com.jintao.vipmanager.database.helper.DbVipUserHelper
+import com.jintao.vipmanager.database.launchWithNotLoadingFlow
 import com.jintao.vipmanager.databinding.ActivityConvertGoodsBinding
 import com.jintao.vipmanager.utils.*
+import kotlinx.coroutines.launch
 
 class ConvertGoodsActivity : BaseActivity<ActivityConvertGoodsBinding>() {
 
-    private lateinit var vipUserDao: DbVipUserHelper<DbVipUserInfo>
-    private lateinit var convertGoodsDao: DbVipUserHelper<DbConvertGoodsInfo>
     private lateinit var vipUserInfo:DbVipUserInfo
+    private lateinit var databaseRepository:DatabaseRepository
 
     override fun initData() {
         var vipUid = intent.getLongExtra(AppConstant.VIP_USER_ID, 0)
         val userName = intent.getStringExtra("vip_user_name")
         val phoneNumber = intent.getStringExtra("vip_phone_number")
 
-        vipUserDao = DbVipUserHelper(this, DbVipUserInfo::class.java).vipUserDao
-        convertGoodsDao = DbVipUserHelper(this, DbConvertGoodsInfo::class.java).convertGoodsDao
-
-        vipUserInfo = vipUserDao.queryById(vipUid)
+        databaseRepository = DatabaseRepository()
         mBinding.title.tvTitleContent.setText("积分兑换")
         mBinding.tvUserName.setText(userName)
         mBinding.tvUserPhone.setText(phoneNumber)
-        mBinding.tvUserJifen.setText(GeneralUtils.getInstence().formatAmount(vipUserInfo.userIntegral))
+
+        launchWithNotLoadingFlow({ databaseRepository.getVipUserDao().queryUserInfoFromId(vipUid) }) {
+            onSuccess = { result ->
+                vipUserInfo = result
+                mBinding.tvUserJifen.setText(GeneralUtils.getInstence().formatAmount(vipUserInfo.getUserIntegral()))
+            }
+        }
     }
 
     override fun initListener() {
@@ -37,6 +46,10 @@ class ConvertGoodsActivity : BaseActivity<ActivityConvertGoodsBinding>() {
             val inputContent = mBinding.etInputContent.editableText.toString()
             checkInputResult(inputJifen,inputContent)
         }
+    }
+
+    override fun initObserve() {
+
     }
 
     private fun checkInputResult(inputJifen: String, inputContent: String) {
@@ -52,36 +65,75 @@ class ConvertGoodsActivity : BaseActivity<ActivityConvertGoodsBinding>() {
             }
             val currentTime = System.currentTimeMillis()
             val jifenSaveBl = MmkvUtil.getString(AppConstant.INTEGRAL_CONVERT_NUMBER, "1").toFloat()
-            if (vipUserInfo.userIntegral - thisJifen >= 0) {
+            if (vipUserInfo.getUserIntegral() - thisJifen >= 0) {
+                showLoadingDialog()
                 val counterAmount = thisJifen / jifenSaveBl
 
-                val resultAmount = CalculatorUtils.getInstence().subtract(vipUserInfo.currentAmount,counterAmount)
-                val resultIntegral = CalculatorUtils.getInstence().subtract(vipUserInfo.userIntegral,thisJifen)
+                val resultAmount = CalculatorUtils.getInstence().subtract(vipUserInfo.getCurrentAmount(),counterAmount)
+                val resultIntegral = CalculatorUtils.getInstence().subtract(vipUserInfo.getUserIntegral(),thisJifen)
 
                 if (resultAmount.toFloat() <= 0f) {
-                    vipUserInfo.currentAmount = 0f
+                    vipUserInfo.setCurrentAmount(0f)
                 }else {
-                    vipUserInfo.currentAmount = resultAmount.toFloat()
+                    vipUserInfo.setCurrentAmount(resultAmount.toFloat())
                 }
-                vipUserInfo.userIntegral = resultIntegral.toFloat()
-                vipUserInfo.consumeTime = currentTime
-                vipUserDao.update(vipUserInfo)
-
+                vipUserInfo.setUserIntegral(resultIntegral.toFloat())
+                vipUserInfo.setConsumeTime(currentTime)
+                //兑换数据
                 val dbConvertGoodsInfo = DbConvertGoodsInfo()
-                dbConvertGoodsInfo.uid = vipUserInfo.uid
-                dbConvertGoodsInfo.time = GeneralUtils.getInstence().timeFormat(currentTime)
-                dbConvertGoodsInfo.desc = inputContent
-                dbConvertGoodsInfo.useIntegral = thisJifen
-                convertGoodsDao.insert(dbConvertGoodsInfo)
+                dbConvertGoodsInfo.setUid(vipUserInfo.getUid())
+                dbConvertGoodsInfo.setTime(GeneralUtils.getInstence().timeFormat(currentTime))
+                dbConvertGoodsInfo.setDesc(inputContent)
+                dbConvertGoodsInfo.setUseIntegral(thisJifen)
 
-                ToastUtils.show("兑换成功")
-                setResult(200)
-                finish()
+                lifecycleScope.launch {
+                    databaseRepository.getVipUserDao().updateUserInfo(vipUserInfo)
+                    databaseRepository.getConvertGoodsDao().insertGoodsInfo(dbConvertGoodsInfo)
+                }
+
+                val userOperateRecordInfo = UserOperateRecordInfo()
+                userOperateRecordInfo.uid = vipUserInfo.getUid()
+                userOperateRecordInfo.userName = vipUserInfo.getUserName()
+                userOperateRecordInfo.phoneNumber = vipUserInfo.getPhoneNumber()
+                val content = "兑换-"+inputContent + "-积分" + thisJifen.toString()
+                userOperateRecordInfo.eventName = content
+                userOperateRecordInfo.createTime = dbConvertGoodsInfo.getTime()
+                MyApplication.cacheOperateRecordList.add(0, userOperateRecordInfo)
+
+                uploadbackupFile()
             }else {
                 ToastUtils.show("兑换积分不能大于可用积分")
             }
         }catch (e:NumberFormatException) {
             ToastUtils.show("请输入正确的积分")
+        }
+    }
+
+    private fun uploadbackupFile() {
+        val backupFilePath = StreamUtils.getBackupFilePath(this)
+        if (!TextUtils.isEmpty(backupFilePath)) {
+            val recordJson = GsonFactory.getSingletonGson().toJson(MyApplication.cacheOperateRecordList)
+            StreamUtils.writeFile(backupFilePath,recordJson)
+            UploadHelper.uploadFile(backupFilePath, AppConfig.BACKUP_DATA_NAME, object : OnPictureUploadListener {
+                override fun onResultSuccess(path: String) {
+                    setConvertResultSuccess()
+                }
+
+                override fun onResultFail() {
+                    setConvertResultSuccess()
+                }
+            })
+        }else {
+            setConvertResultSuccess()
+        }
+    }
+
+    private fun setConvertResultSuccess() {
+        runOnUiThread {
+            dismissLoadingDialog()
+            ToastUtils.show("兑换成功")
+            setResult(200)
+            finish()
         }
     }
 

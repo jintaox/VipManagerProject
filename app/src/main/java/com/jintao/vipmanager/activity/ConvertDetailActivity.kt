@@ -11,9 +11,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.jintao.vipmanager.R
 import com.jintao.vipmanager.base.BaseActivity
+import com.jintao.vipmanager.database.DatabaseRepository
 import com.jintao.vipmanager.database.bean.DbConvertGoodsInfo
-import com.jintao.vipmanager.database.bean.DbVipUserInfo
-import com.jintao.vipmanager.database.helper.DbVipUserHelper
+import com.jintao.vipmanager.database.launchWithNotLoadingFlow
 import com.jintao.vipmanager.databinding.ActivityConvertDetailBinding
 import com.jintao.vipmanager.databinding.ItemConvertGoodsLayoutBinding
 import com.jintao.vipmanager.utils.AppConstant
@@ -21,52 +21,55 @@ import com.jintao.vipmanager.utils.GeneralUtils
 
 class ConvertDetailActivity : BaseActivity<ActivityConvertDetailBinding>() {
 
-    private lateinit var vipUserDao: DbVipUserHelper<DbVipUserInfo>
-    private lateinit var convertGoodsDao: DbVipUserHelper<DbConvertGoodsInfo>
-    private lateinit var vipUserInfo:DbVipUserInfo
-
     override fun initData() {
         var vipUserId = intent.getLongExtra(AppConstant.VIP_USER_ID, 0)
         var vipUid = intent.getIntExtra("vip_integral_uid", 0)
 
-        vipUserDao = DbVipUserHelper(this, DbVipUserInfo::class.java).vipUserDao
-        convertGoodsDao = DbVipUserHelper(this, DbConvertGoodsInfo::class.java).convertGoodsDao
+        val databaseRepository = DatabaseRepository()
 
         mBinding.title.tvTitleContent.setText("兑换明细")
 
-        vipUserInfo = vipUserDao.queryById(vipUserId)
-
-        mBinding.tvCurrentIntegral.setText(GeneralUtils.getInstence().formatAmount(vipUserInfo.userIntegral))
-
-        var convertIntegral = 0
-        val convertGoodsList = convertGoodsDao.queryByConvertGoodsUid(vipUid)
-        mBinding.tvConverCount.setText(convertGoodsList.size.toString())
-
-        if (convertGoodsList!=null&&convertGoodsList.size!=0) {
-            for (index in 0 until convertGoodsList.size) {
-                val goodsInfo = convertGoodsList.get(index)
-                convertIntegral += goodsInfo.useIntegral
+        launchWithNotLoadingFlow({ databaseRepository.getVipUserDao().queryUserInfoFromId(vipUserId) }) {
+            onSuccess = { result ->
+                mBinding.tvCurrentIntegral.setText(GeneralUtils.getInstence().formatAmount(result.getUserIntegral()))
             }
-            mBinding.tvConvertIntegral.setText(convertIntegral.toString())
-            mBinding.rvGoodsList.layoutManager = LinearLayoutManager(this)
-            val dividerItemDecoration =
-                DividerItemDecoration(this, DividerItemDecoration.VERTICAL)
-            dividerItemDecoration.setDrawable(
-                ContextCompat.getDrawable(
-                    this,
-                    R.drawable.home_divider_line_shape
-                )!!
-            )
-            mBinding.rvGoodsList.addItemDecoration(dividerItemDecoration)
-            val myAdapter = MyAdapter(convertGoodsList)
-            mBinding.rvGoodsList.adapter = myAdapter
-        }else {
-            mBinding.tvConvertIntegral.setText("0")
+        }
+
+        launchWithNotLoadingFlow({ databaseRepository.getConvertGoodsDao().queryFormUid(vipUid) }) {
+            onSuccess = { convertGoodsList ->
+                mBinding.tvConverCount.setText(convertGoodsList.size.toString())
+                var convertIntegral = 0
+                if (convertGoodsList!=null&&convertGoodsList.size!=0) {
+                    for (index in 0 until convertGoodsList.size) {
+                        val goodsInfo = convertGoodsList.get(index)
+                        convertIntegral += goodsInfo.getUseIntegral()
+                    }
+                    mBinding.tvConvertIntegral.setText(convertIntegral.toString())
+                    mBinding.rvGoodsList.layoutManager = LinearLayoutManager(this@ConvertDetailActivity)
+                    val dividerItemDecoration =
+                        DividerItemDecoration(this@ConvertDetailActivity, DividerItemDecoration.VERTICAL)
+                    dividerItemDecoration.setDrawable(
+                        ContextCompat.getDrawable(
+                            this@ConvertDetailActivity,
+                            R.drawable.home_divider_line_shape
+                        )!!
+                    )
+                    mBinding.rvGoodsList.addItemDecoration(dividerItemDecoration)
+                    val myAdapter = MyAdapter(convertGoodsList)
+                    mBinding.rvGoodsList.adapter = myAdapter
+                }else {
+                    mBinding.tvConvertIntegral.setText("0")
+                }
+            }
         }
     }
 
     override fun initListener() {
         mBinding.title.ivTitleBack.setOnClickListener { finish() }
+    }
+
+    override fun initObserve() {
+
     }
 
     override fun getViewBinding(): ActivityConvertDetailBinding {
@@ -82,9 +85,9 @@ class ConvertDetailActivity : BaseActivity<ActivityConvertDetailBinding>() {
 
         override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
             val convertGoodsInfo = list.get(position)
-            holder.itemBind.itemTvJifen.setText("兑换"+convertGoodsInfo.useIntegral.toString()+"积分")
-            holder.itemBind.itemTvContent.setText(convertGoodsInfo.desc)
-            holder.itemBind.itemTvTime.setText(convertGoodsInfo.time)
+            holder.itemBind.itemTvJifen.setText("兑换"+convertGoodsInfo.getUseIntegral().toString()+"积分")
+            holder.itemBind.itemTvContent.setText(convertGoodsInfo.getDesc())
+            holder.itemBind.itemTvTime.setText(convertGoodsInfo.getTime())
             holder.itemView.setOnTouchListener(object :View.OnTouchListener{
                 override fun onTouch(v: View?, event: MotionEvent?): Boolean {
                     if (event!=null) {
@@ -112,6 +115,5 @@ class ConvertDetailActivity : BaseActivity<ActivityConvertDetailBinding>() {
                 itemBind = ItemConvertGoodsLayoutBinding.bind(itemView)
             }
         }
-
     }
 }

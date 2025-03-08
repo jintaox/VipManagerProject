@@ -37,6 +37,10 @@ class ChangeNameActivity : BaseActivity<ActivityChangeNameBinding>() {
         }
     }
 
+    override fun initObserve() {
+
+    }
+
     override fun getViewBinding(): ActivityChangeNameBinding {
         return ActivityChangeNameBinding.inflate(layoutInflater)
     }

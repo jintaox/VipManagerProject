@@ -8,8 +8,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.jintao.vipmanager.R
 import com.jintao.vipmanager.adapter.IntegralDetailAdapter
 import com.jintao.vipmanager.base.BaseActivity
+import com.jintao.vipmanager.database.DatabaseRepository
 import com.jintao.vipmanager.database.bean.DbUserConsumeInfo
-import com.jintao.vipmanager.database.helper.DbVipUserHelper
+import com.jintao.vipmanager.database.launchWithNotLoadingFlow
 import com.jintao.vipmanager.databinding.ActivityIntegralDetailBinding
 import com.jintao.vipmanager.listener.OnSelectPickerListener
 import com.jintao.vipmanager.utils.GeneralUtils
@@ -22,7 +23,7 @@ import kotlin.collections.ArrayList
 
 class IntegralDetailActivity : BaseActivity<ActivityIntegralDetailBinding>(), ByRecyclerView.OnLoadMoreListener {
 
-    private lateinit var consumeUserDao:DbVipUserHelper<DbUserConsumeInfo>
+    private lateinit var databaseRepository: DatabaseRepository
     private var consumeList:ArrayList<DbUserConsumeInfo> = arrayListOf()
     private lateinit var integralDetailAdapter:IntegralDetailAdapter
     private var vipUid = 0
@@ -52,14 +53,17 @@ class IntegralDetailActivity : BaseActivity<ActivityIntegralDetailBinding>(), By
         )
         mBinding.rvIntegralList.addItemDecoration(dividerItemDecoration)
 
-        consumeUserDao = DbVipUserHelper(this, DbUserConsumeInfo::class.java).userConsumeDao
-        val dbList = consumeUserDao.queryByConsumeUidAll(vipUid,pageSize,0)
-        if (dbList.size==pageSize) {
-            mBinding.rvIntegralList.setLoadMoreEnabled(true)
+        databaseRepository = DatabaseRepository()
+        launchWithNotLoadingFlow({ databaseRepository.queryByConsumeUidAll(vipUid,pageSize,0) }) {
+            onSuccess = { dbList ->
+                if (dbList.size==pageSize) {
+                    mBinding.rvIntegralList.setLoadMoreEnabled(true)
+                }
+                consumeList.addAll(dbList)
+                integralDetailAdapter = IntegralDetailAdapter(consumeList)
+                mBinding.rvIntegralList.adapter = integralDetailAdapter
+            }
         }
-        consumeList.addAll(dbList)
-        integralDetailAdapter = IntegralDetailAdapter(consumeList)
-        mBinding.rvIntegralList.adapter = integralDetailAdapter
     }
 
     override fun initListener() {
@@ -70,18 +74,7 @@ class IntegralDetailActivity : BaseActivity<ActivityIntegralDetailBinding>(), By
             showTimePickerPopup(object :OnSelectPickerListener{
                 override fun setResult(result: String) {
                     if (!TextUtils.isEmpty(result)) {
-                        val dateList = consumeUserDao.queryByConsumeUidDate(vipUid,result)
-                        integralDetailAdapter.setListData(dateList)
-                        integralDetailAdapter.notifyDataSetChanged()
-                        if (dateList.size==0) {
-                            if (mBinding.tvTipNull.visibility == View.GONE) {
-                                mBinding.tvTipNull.visibility = View.VISIBLE
-                            }
-                        }else {
-                            if (mBinding.tvTipNull.visibility == View.VISIBLE) {
-                                mBinding.tvTipNull.visibility = View.GONE
-                            }
-                        }
+                        querySeleteDateConsumeList(vipUid,result)
                     }else {//恢复默认显示
                         integralDetailAdapter.setListData(consumeList)
                         integralDetailAdapter.notifyDataSetChanged()
@@ -92,6 +85,28 @@ class IntegralDetailActivity : BaseActivity<ActivityIntegralDetailBinding>(), By
                 }
             })
         }
+    }
+
+    private fun querySeleteDateConsumeList(vipUid: Int, result: String) {
+        launchWithNotLoadingFlow({ databaseRepository.queryByConsumeUidDate(vipUid,result) }) {
+            onSuccess = { dateList ->
+                integralDetailAdapter.setListData(dateList)
+                integralDetailAdapter.notifyDataSetChanged()
+                if (dateList.size==0) {
+                    if (mBinding.tvTipNull.visibility == View.GONE) {
+                        mBinding.tvTipNull.visibility = View.VISIBLE
+                    }
+                }else {
+                    if (mBinding.tvTipNull.visibility == View.VISIBLE) {
+                        mBinding.tvTipNull.visibility = View.GONE
+                    }
+                }
+            }
+        }
+    }
+
+    override fun initObserve() {
+
     }
 
     private fun showTimePickerPopup(listener: OnSelectPickerListener) {
@@ -133,12 +148,15 @@ class IntegralDetailActivity : BaseActivity<ActivityIntegralDetailBinding>(), By
 
     override fun onLoadMore() {
         pageCount++
-        val dbList = consumeUserDao.queryByConsumeUidAll(vipUid,pageSize,pageCount)
-        mBinding.rvIntegralList.loadMoreComplete()
-        if (dbList.size < pageSize) {
-            mBinding.rvIntegralList.setLoadMoreEnabled(false)
+        launchWithNotLoadingFlow({ databaseRepository.queryByConsumeUidAll(vipUid,pageSize,pageCount) }) {
+            onSuccess = { dbList ->
+                mBinding.rvIntegralList.loadMoreComplete()
+                if (dbList.size < pageSize) {
+                    mBinding.rvIntegralList.setLoadMoreEnabled(false)
+                }
+                consumeList.addAll(dbList)
+                integralDetailAdapter.notifyDataSetChanged()
+            }
         }
-        consumeList.addAll(dbList)
-        integralDetailAdapter.notifyDataSetChanged()
     }
 }

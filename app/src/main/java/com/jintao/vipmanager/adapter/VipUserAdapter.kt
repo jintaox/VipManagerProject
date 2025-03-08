@@ -24,16 +24,16 @@ class VipUserAdapter(var list: List<DbVipUserInfo>, var listener: OnVipItemClick
     override fun onBindViewHolder(holder: UserViewHolder, position: Int) {
         val vipUserInfo = list.get(position)
         if (TextUtils.isEmpty(richText)) {
-            holder.itemBind.itemTvPhone.setText(vipUserInfo.phoneNumber)
-            holder.itemBind.itemTvName.setText(vipUserInfo.userName)
+            holder.itemBind.itemTvPhone.setText(vipUserInfo.getPhoneNumber())
+            holder.itemBind.itemTvName.setText(vipUserInfo.getUserName())
         }else {
             val isNumberic = GeneralUtils.getInstence().isNumberic(richText)
             if (isNumberic) {
-                GeneralUtils.getInstence().setRichText(vipUserInfo.phoneNumber,richText,holder.itemBind.itemTvPhone)
-                holder.itemBind.itemTvName.setText(vipUserInfo.userName)
+                GeneralUtils.getInstence().setRichText(vipUserInfo.getPhoneNumber(),richText,holder.itemBind.itemTvPhone)
+                holder.itemBind.itemTvName.setText(vipUserInfo.getUserName())
             }else {
-                GeneralUtils.getInstence().setRichText(vipUserInfo.userName,richText,holder.itemBind.itemTvName)
-                holder.itemBind.itemTvPhone.setText(vipUserInfo.phoneNumber)
+                GeneralUtils.getInstence().setRichText(vipUserInfo.getUserName(),richText,holder.itemBind.itemTvName)
+                holder.itemBind.itemTvPhone.setText(vipUserInfo.getPhoneNumber())
             }
         }
 
@@ -42,22 +42,19 @@ class VipUserAdapter(var list: List<DbVipUserInfo>, var listener: OnVipItemClick
         }else {
             holder.itemView.setBackgroundColor(Color.rgb(235,235,235))
         }
-        holder.itemBind.itemTvIntegral.setText("积分:"+GeneralUtils.getInstence().formatAmount(vipUserInfo.userIntegral))
-        holder.itemBind.itemConsumeCount.setText("消费:"+vipUserInfo.consumeNumber+"笔")
-        val theConsume = GeneralUtils.getInstence().formatAmount(vipUserInfo.lastAmount)
-        holder.itemBind.itemRecentTime.setText("最近:"+theConsume+"元  "+GeneralUtils.getInstence().timeFormat(vipUserInfo.consumeTime))
+        holder.itemBind.itemTvIntegral.setText("积分:"+GeneralUtils.getInstence().formatAmount(vipUserInfo.getUserIntegral()))
+        holder.itemBind.itemConsumeCount.setText("消费:"+vipUserInfo.getConsumeNumber()+"笔")
+        val theConsume = GeneralUtils.getInstence().formatAmount(vipUserInfo.getExchangeNumber())
+        holder.itemBind.itemRecentTime.setText("最近:"+theConsume+"元  "+GeneralUtils.getInstence().timeFormat(vipUserInfo.getConsumeTime()))
         holder.itemView.setOnClickListener {
             listener.onItemClick(vipUserInfo,0)
         }
         holder.itemBind.stvLookDetail.setOnClickListener {
             listener.onItemClick(vipUserInfo,1)
         }
-        holder.itemView.setOnLongClickListener(object :View.OnLongClickListener{
-            override fun onLongClick(v: View?): Boolean {
-                listener.onItemClick(vipUserInfo,2)
-                return true
-            }
-        })
+        holder.itemBind.stvRevokeRecord.setOnClickListener {
+            listener.onItemClick(vipUserInfo,2)
+        }
     }
 
     override fun getItemCount(): Int {

@@ -25,9 +25,21 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.VipManagerProject">
         <activity
-            android:name=".activity.SetPasswordActivity"
+            android:name=".activity.StatisticFromActivity"
             android:exported="false"
             android:screenOrientation="landscape"/>
+        <activity
+            android:name=".activity.ConvertGoodsTableActivity"
+            android:exported="false"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".activity.FunctionActivity"
+            android:exported="false"
+            android:screenOrientation="landscape" />
+        <activity
+            android:name=".activity.SetPasswordActivity"
+            android:exported="false"
+            android:screenOrientation="landscape" />
         <activity
             android:name=".activity.ConvertGoodsActivity"
             android:exported="false"

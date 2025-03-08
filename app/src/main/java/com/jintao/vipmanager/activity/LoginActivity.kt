@@ -49,6 +49,10 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>() {
         }
     }
 
+    override fun initObserve() {
+
+    }
+
     private fun loginUser(inputName: String,inputPhoneNumber: String) {
         val userInfo = UserInfo()
         userInfo.isLogin = true
@@ -60,11 +64,6 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>() {
         finish()
     }
 
-    /**
-     * 采用onStart方式，重新判断，而不是用 onActivityResult 接收回调结果，
-     * 是因为跳转系统的界面因为各个厂商品牌型号等，如果跳转出现异常，回调就会无效，就不知道用户的操作
-     * 所以onStart方法回来，重新检查结果，兼容性能确保万无一失
-     */
     override fun onStart() {
         super.onStart()
         if (isOpenPermPage) {

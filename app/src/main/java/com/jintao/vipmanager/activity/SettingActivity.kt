@@ -22,6 +22,7 @@ class SettingActivity : BaseActivity<ActivitySettingBinding>() {
 
     private var isUploadDate = true
     private var isXiugaiJifen = false
+    private var isXiugaiAmount = false
 
     override fun initData() {
         mBinding.title.tvTitleContent.setText("个人信息")
@@ -33,6 +34,9 @@ class SettingActivity : BaseActivity<ActivitySettingBinding>() {
 
         val saveJifen = MmkvUtil.getString(AppConstant.INTEGRAL_CONVERT_NUMBER, "1")
         mBinding.etInputJifen.setText(saveJifen)
+
+        val saveBigAmount = MmkvUtil.getString(AppConstant.BIG_AMOUNT_TIP, "500")
+        mBinding.etInputAmount.setText(saveBigAmount)
     }
 
     private val mUserLauncher =
@@ -83,6 +87,20 @@ class SettingActivity : BaseActivity<ActivitySettingBinding>() {
             }
 
         })
+        mBinding.etInputAmount.addTextChangedListener(object :TextWatcher{
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                isXiugaiAmount = true
+            }
+
+        })
         mBinding.rlUploadDate.setOnClickListener{
             if (isUploadDate) {
                 isUploadDate = false
@@ -114,6 +132,10 @@ class SettingActivity : BaseActivity<ActivitySettingBinding>() {
         }
     }
 
+    override fun initObserve() {
+
+    }
+
     override fun onPause() {
         super.onPause()
         if(isXiugaiJifen) {
@@ -132,11 +154,25 @@ class SettingActivity : BaseActivity<ActivitySettingBinding>() {
                 }
             }
         }
+        if(isXiugaiAmount) {
+            val inputJiFenStr = mBinding.etInputAmount.editableText.trim().toString()
+            if (!TextUtils.isEmpty(inputJiFenStr)) {
+                val saveBigAmount = MmkvUtil.getString(AppConstant.BIG_AMOUNT_TIP, "500").toInt()
+                try {
+                    val inputBigAmount = inputJiFenStr.toInt()
+                    if(saveBigAmount != inputBigAmount && inputBigAmount >= 0) {
+                        MmkvUtil.putString(AppConstant.BIG_AMOUNT_TIP, inputBigAmount.toString())
+                    }
+                }catch (e:IllegalArgumentException) {
+                    ToastUtils.show("数字格式错误")
+                }
+            }
+        }
     }
 
     private fun restoreDatabase(inputFilename: String) {
         val loginInfo = LoginManager.getInstence().getLoginInfo()
-        val downloadUrl = AppConfig.aliyunBaseUrl + loginInfo.phoneNumber +"/"+inputFilename + ".db"
+        val downloadUrl = AppConfig.ALIYUN_BASE_URL + loginInfo.phoneNumber +"/"+inputFilename + ".db"
         val sdcardDatabasePath = StreamUtils.getSdcardDatabasePath()
         val sdcardDatabaseFile = File(sdcardDatabasePath)
         if (sdcardDatabaseFile!=null&&sdcardDatabaseFile.exists()) {
@@ -152,8 +188,12 @@ class SettingActivity : BaseActivity<ActivitySettingBinding>() {
                 }
 
                 override fun onDownloadSuccess(file: File?) {
-                    val dataBasePath = getDatabasePath(AppConfig.DATABASE_FILE_NAME).path
-                    File(dataBasePath).delete()
+                    val dataBasePath1 = getDatabasePath(AppConfig.DATABASE_FILE_NAME).path
+                    val dataBasePath2 = getDatabasePath(AppConfig.DATABASE_FILE_SHM).path
+                    val dataBasePath3 = getDatabasePath(AppConfig.DATABASE_FILE_WAL).path
+                    File(dataBasePath1).delete()
+                    File(dataBasePath2).delete()
+                    File(dataBasePath3).delete()
                     System.exit(0)
                 }
 
@@ -168,7 +208,7 @@ class SettingActivity : BaseActivity<ActivitySettingBinding>() {
         val dataBaseFile = File(dataBasePath)
         if (dataBaseFile!=null&&dataBaseFile.exists()) {
             showLoadingDialog("正在上传...")
-            UploadHelper.uploadAliyunFile(dataBasePath,object : OnPictureUploadListener {
+            UploadHelper.uploadImage(dataBasePath,object : OnPictureUploadListener {
                 override fun onResultSuccess(path: String) {
                     runOnUiThread {
                         dismissLoadingDialog()

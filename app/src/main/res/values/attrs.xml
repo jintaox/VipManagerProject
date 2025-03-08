@@ -24,4 +24,25 @@
         </attr>
     </declare-styleable>
 
+    <declare-styleable name="MySpinnerView">
+        <attr name="spinner_hint_text" format="string"/>
+        <attr name="spinner_text_color" format="color"/>
+        <attr name="spinner_text_size" format="integer"/>
+        <attr name="spinner_arrow_color" format="color"/>
+        <attr name="spinner_arrow_padding" format="dimension"/>
+        <attr name="spinner_padding_top" format="dimension" />
+        <attr name="spinner_padding_left" format="dimension" />
+        <attr name="spinner_padding_bottom" format="dimension" />
+        <attr name="spinner_padding_right" format="dimension" />
+        <attr name="popup_padding_top" format="dimension" />
+        <attr name="popup_padding_bottom" format="dimension" />
+        <attr name="item_show_select_image" format="boolean"/>
+        <attr name="item_normal_color" format="color"/>
+        <attr name="item_select_color" format="color"/>
+        <attr name="item_text_size" format="integer"/>
+        <attr name="item_padding_top" format="dimension" />
+        <attr name="item_padding_left" format="dimension" />
+        <attr name="item_padding_bottom" format="dimension" />
+        <attr name="item_padding_right" format="dimension" />
+    </declare-styleable>
 </resources>

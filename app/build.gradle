@@ -2,18 +2,23 @@ plugins {
     id 'com.android.application'
     id 'kotlin-android'
     id 'kotlin-kapt'
-    id 'org.greenrobot.greendao'
 }
 
 android {
+
     compileSdk 31
+
+//    namespace 'com.jintao.vipmanager'
+//    compileSdk 34
 
     defaultConfig {
         applicationId "com.jintao.vipmanager"
         minSdk 21
         targetSdk 31
-        versionCode 1
-        versionName "1.0.0"
+//        targetSdk 34
+        versionCode 2
+        versionName "1.2.0"
+
         ndk {
             abiFilters 'x86_64', 'arm64-v8a' ,'x86', 'armeabi-v7a'
         }
@@ -45,15 +50,24 @@ android {
         jvmTarget = '1.8'
     }
 
+//    compileOptions {
+//        sourceCompatibility JavaVersion.VERSION_17
+//        targetCompatibility JavaVersion.VERSION_17
+//    }
+//    kotlinOptions {
+//        jvmTarget = '17'
+//    }
+
     buildFeatures {
         viewBinding = true
+        buildConfig  true
     }
 
-    greendao {
-        schemaVersion 1
-        targetGenDir 'src/main/java'
-        daoPackage 'com.jintao.vipmanager.database.dao'
-    }
+//    javaCompileOptions {
+//        annotationProcessorOptions {
+//            arguments = ["room.schemaLocation": "$projectDir/schemas".toString()]
+//        }
+//    }
 
     applicationVariants.all { variant ->
         variant.outputs.all {
@@ -70,22 +84,34 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.4.0'
     implementation 'com.google.android.material:material:1.4.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
+    implementation 'androidx.gridlayout:gridlayout:1.0.0'
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 
-    implementation 'com.squareup.okhttp3:okhttp:3.14.7'
-    implementation 'com.squareup.okhttp3:logging-interceptor:3.14.7'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.0'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.0'
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.4.0'
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.4.0"
+
+    implementation 'com.squareup.okhttp3:okhttp:4.9.1'
+    implementation 'com.squareup.okhttp3:logging-interceptor:4.9.1'
 
     implementation 'com.aliyun.dpa:oss-android-sdk:2.9.11'
 
-    implementation 'com.google.code.gson:gson:2.8.9'
-    implementation 'com.github.getActivity:GsonFactory:5.2'
+    implementation 'com.google.code.gson:gson:2.9.0'
+    implementation 'com.github.getActivity:GsonFactory:9.6'
     implementation 'com.github.getActivity:ShapeView:8.2'
     implementation 'com.github.getActivity:ToastUtils:10.0'
     implementation 'com.github.getActivity:EasyHttp:12.0'
 
-    implementation 'org.greenrobot:greendao:3.3.0'
+    def room_version = '2.4.0'
+//    def room_version = '2.6.1'
+    implementation "androidx.room:room-runtime:$room_version"
+    kapt "androidx.room:room-compiler:$room_version"
+    annotationProcessor "androidx.room:room-compiler:$room_version"
+    implementation "androidx.room:room-ktx:$room_version"
 
     implementation 'top.zibin:Luban:1.1.8'
 
@@ -93,8 +119,10 @@ dependencies {
 
     implementation 'com.tencent:mmkv-static:1.2.10'
 
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
+
     implementation 'com.gyf.immersionbar:immersionbar:3.0.0'
-    implementation 'com.github.li-xiaojun:XPopup:2.6.7'
+    implementation 'com.github.li-xiaojun:XPopup:2.10.0'
     implementation 'com.github.li-xiaojun:XPopupExt:1.0.0'
     implementation 'com.github.youlookwhat:ByRecyclerView:1.3.6'
 }

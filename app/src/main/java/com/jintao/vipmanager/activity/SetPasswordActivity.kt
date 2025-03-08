@@ -3,6 +3,7 @@ package com.jintao.vipmanager.activity
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
+import android.util.Log
 import com.hjq.toast.ToastUtils
 import com.jintao.secret.EncrypyUtils
 import com.jintao.vipmanager.base.BaseActivity
@@ -11,7 +12,7 @@ import com.jintao.vipmanager.utils.AppConstant
 import com.jintao.vipmanager.utils.MmkvUtil
 
 /**
- * root密码：159357
+ * root密码：68013975
  */
 class SetPasswordActivity : BaseActivity<ActivitySetPasswordBinding>() {
 
@@ -20,9 +21,9 @@ class SetPasswordActivity : BaseActivity<ActivitySetPasswordBinding>() {
 
     override fun initData() {
         mBinding.title.tvTitleContent.setText("修改管理员密码")
-        savePwd = MmkvUtil.getString(AppConstant.ADMIN_PASSWORD_ID, "1234")
+        savePwd = MmkvUtil.getString(AppConstant.ADMIN_PASSWORD_ID, "2580")
 
-        rootPwd = EncrypyUtils().decode("I4TjHQ8y5xYP6YrN48ypZA==")
+        rootPwd = EncrypyUtils().decode("QAmBq3EHvPbDG9XYOlVecg==")
     }
 
     override fun initListener() {
@@ -46,13 +47,17 @@ class SetPasswordActivity : BaseActivity<ActivitySetPasswordBinding>() {
             override fun afterTextChanged(str: Editable?) {
                 val input = str.toString()
                 if (input.equals(rootPwd)) {
-                    MmkvUtil.putString(AppConstant.ADMIN_PASSWORD_ID, "1234")
+                    MmkvUtil.putString(AppConstant.ADMIN_PASSWORD_ID, "2580")
                     ToastUtils.show("密码重置成功")
                     finish()
                 }
             }
 
         })
+    }
+
+    override fun initObserve() {
+
     }
 
     private fun sheckInput(inputOldPwd: String, inputNewPwd: String, inputCfPwd: String) {

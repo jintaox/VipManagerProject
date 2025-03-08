@@ -28,7 +28,7 @@ class CheXiaoDialog(mContext:Context, var title:String,var desc:String, var list
         mBinding.tvTitle.setText(title)
         mBinding.tvDesc.setText(desc)
 
-        val savePwd = MmkvUtil.getString(AppConstant.ADMIN_PASSWORD_ID, "1234")
+        val savePwd = MmkvUtil.getString(AppConstant.ADMIN_PASSWORD_ID, "2580")
 
         mBinding.stvConfirm.setOnClickListener {
             val inputPassword = mBinding.etInputPassword.editableText.toString()

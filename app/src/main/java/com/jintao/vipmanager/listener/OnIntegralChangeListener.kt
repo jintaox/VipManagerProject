@@ -7,4 +7,5 @@ package com.jintao.vipmanager.listener
  */
 interface OnIntegralChangeListener {
     fun onSuccess()
+    fun onRepeatConfirm(type:Int, thisAmount: Float)
 }

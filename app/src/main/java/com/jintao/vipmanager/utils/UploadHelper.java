@@ -1,7 +1,7 @@
 package com.jintao.vipmanager.utils;
 
 import android.text.TextUtils;
-
+import android.util.Log;
 import com.alibaba.sdk.android.oss.ClientConfiguration;
 import com.alibaba.sdk.android.oss.ClientException;
 import com.alibaba.sdk.android.oss.OSS;
@@ -14,7 +14,6 @@ import com.alibaba.sdk.android.oss.internal.OSSAsyncTask;
 import com.alibaba.sdk.android.oss.model.PutObjectRequest;
 import com.alibaba.sdk.android.oss.model.PutObjectResult;
 import com.drhkj.pialn.listener.OnPictureUploadListener;
-import com.jintao.secret.EncrypyUtils;
 import com.jintao.vipmanager.MyApplication;
 import com.jintao.vipmanager.bean.UserInfo;
 
@@ -32,14 +31,22 @@ public class UploadHelper {
         return new OSSClient(MyApplication.Companion.getMContext(), AppConfig.aliyunEndpoint, credentialProvider,conf);
     }
 
-    public static void uploadAliyunFile(String path, OnPictureUploadListener listener) {
-        EncrypyUtils encrypyUtils = new EncrypyUtils();
-        String accessKeyId = encrypyUtils.decode(AppConfig.aliyunKeyId);
-        String accessKeySecret = encrypyUtils.decode(AppConfig.aliyunKeySecret);
-        if (TextUtils.isEmpty(AppConfig.aliyunEndpoint)||TextUtils.isEmpty(accessKeyId)||TextUtils.isEmpty(accessKeySecret)) {
+    /**
+     * 上传普通图片
+     *
+     * @param path 本地地址
+     * @return 服务器地址
+     */
+    public static void uploadImage(String path,OnPictureUploadListener listener) {
+        String aliyunEndpoint = AppConfig.aliyunEndpoint;
+        String accessKeyId = AppConfig.aliyunKeyId;
+        String accessKeySecret = AppConfig.aliyunKeySecret;
+
+        if (TextUtils.isEmpty(aliyunEndpoint)||TextUtils.isEmpty(accessKeyId)||TextUtils.isEmpty(accessKeySecret)) {
+            listener.onResultFail();
             return;
         }
-        String objectKey = getObjectFileKey();
+        String objectKey = getObjectImagcabseKey();
         // 构造上传请求
         PutObjectRequest request = new PutObjectRequest(AppConfig.aliyunBucketName, objectKey, path);
         //获取仓库初始化实例
@@ -51,7 +58,38 @@ public class UploadHelper {
                 /********************  当前异步线程，展示UI请切换UI线程    *********************/
                 //获取解析url
                 String url = client.presignPublicObjectURL(AppConfig.aliyunBucketName, objectKey);
-//                Log.e("AAAAAA",url);
+                listener.onResultSuccess(url);
+            }
+
+            @Override
+            public void onFailure(PutObjectRequest request, ClientException clientExcepion, ServiceException serviceException) {
+                /********************  当前异步线程，展示UI请切换UI线程    *********************/
+                listener.onResultFail();
+            }
+        });
+    }
+
+    public static void uploadFile(String path,String fileName,OnPictureUploadListener listener) {
+        String aliyunEndpoint = AppConfig.aliyunEndpoint;
+        String accessKeyId = AppConfig.aliyunKeyId;
+        String accessKeySecret = AppConfig.aliyunKeySecret;
+
+        if (TextUtils.isEmpty(aliyunEndpoint)||TextUtils.isEmpty(accessKeyId)||TextUtils.isEmpty(accessKeySecret)) {
+            listener.onResultFail();
+            return;
+        }
+        String objectKey = getObjectImagcabseKey(fileName);
+        // 构造上传请求
+        PutObjectRequest request = new PutObjectRequest(AppConfig.aliyunBucketName, objectKey, path);
+        //获取仓库初始化实例
+        OSS client = getOSSClient(accessKeyId,accessKeySecret);
+        //异步上传请求
+        OSSAsyncTask<PutObjectResult> task = client.asyncPutObject(request, new OSSCompletedCallback<PutObjectRequest, PutObjectResult>() {
+            @Override
+            public void onSuccess(PutObjectRequest request, PutObjectResult result) {
+                /********************  当前异步线程，展示UI请切换UI线程    *********************/
+                //获取解析url
+                String url = client.presignPublicObjectURL(AppConfig.aliyunBucketName, objectKey);
                 listener.onResultSuccess(url);
             }
 
@@ -68,9 +106,15 @@ public class UploadHelper {
      *
      * @return key
      */
-    private static String getObjectFileKey() {
+    private static String getObjectImagcabseKey() {
         UserInfo loginInfo = LoginManager.Companion.getInstence().getLoginInfo();
         String name = loginInfo.getPhoneNumber()+"/"+System.currentTimeMillis() + ".db";
+        return name;
+    }
+
+    private static String getObjectImagcabseKey(String fileName) {
+        UserInfo loginInfo = LoginManager.Companion.getInstence().getLoginInfo();
+        String name = loginInfo.getPhoneNumber()+"/"+fileName;
         return name;
     }
 }

@@ -3,29 +3,33 @@ package com.jintao.vipmanager.activity
 import android.content.Intent
 import android.view.KeyEvent
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.ViewModelProvider
 import com.hjq.toast.ToastUtils
 import com.jintao.vipmanager.R
 import com.jintao.vipmanager.base.BaseActivity
-import com.jintao.vipmanager.database.bean.DbConvertGoodsInfo
-import com.jintao.vipmanager.database.bean.DbUserConsumeInfo
+import com.jintao.vipmanager.database.DatabaseRepository
 import com.jintao.vipmanager.database.bean.DbVipUserInfo
-import com.jintao.vipmanager.database.helper.DbVipUserHelper
+import com.jintao.vipmanager.database.collectIn
+import com.jintao.vipmanager.database.launchWithNotLoadingFlow
 import com.jintao.vipmanager.databinding.ActivityUserDetailBinding
 import com.jintao.vipmanager.dialog.ChangeIntegralDialog
 import com.jintao.vipmanager.dialog.CheXiaoDialog
 import com.jintao.vipmanager.dialog.CommonAllDialog
+import com.jintao.vipmanager.dialog.ConsumeConfirmDialog
 import com.jintao.vipmanager.listener.OnIntegralChangeListener
 import com.jintao.vipmanager.utils.AppConstant
 import com.jintao.vipmanager.utils.GeneralUtils
+import com.jintao.vipmanager.viewmodel.UserDetailViewModel
 import com.lxj.xpopup.XPopup
 import com.lxj.xpopup.interfaces.OnConfirmListener
 
 class UserDetailActivity:BaseActivity<ActivityUserDetailBinding>() {
 
     private var vipUserId:Long = -1
-    private lateinit var vipUserDao: DbVipUserHelper<DbVipUserInfo>
-    private lateinit var convertGoodsDao: DbVipUserHelper<DbConvertGoodsInfo>
     private lateinit var vipUserInfo:DbVipUserInfo
+    private lateinit var mViewModel:UserDetailViewModel
+    private lateinit var databaseRepository:DatabaseRepository
     private var isRrfreshHomePage = false
     private var isShowTotalAmount = false
     private var isShowUserAmount = false
@@ -34,17 +38,45 @@ class UserDetailActivity:BaseActivity<ActivityUserDetailBinding>() {
         mBinding.title.tvTitleContent.setText("会员详情")
         vipUserId = intent.getLongExtra(AppConstant.VIP_USER_ID, -1)
 //        Log.e("AAAAAA",vipUserId.toString())
-        vipUserDao = DbVipUserHelper(this, DbVipUserInfo::class.java).vipUserDao
-        convertGoodsDao = DbVipUserHelper(this, DbConvertGoodsInfo::class.java).convertGoodsDao
+        databaseRepository = DatabaseRepository()
+        mViewModel.queryVipUserInfo(vipUserId)
+    }
 
-        getUserInfo()
+    override fun initObserve() {
+        mViewModel = ViewModelProvider(this).get(UserDetailViewModel::class.java)
+        mViewModel.loadUserFlowState.collectIn(this, Lifecycle.State.STARTED) {
+            onSuccess = { result ->
+                vipUserInfo = result
+                mBinding.tvUserName.setText(result.getUserName())
+                mBinding.tvPhoneNumber.setText(result.getPhoneNumber())
+                mBinding.tvRegisterTime.setText("注册时间:"+result.getRegisterTime())
+                mBinding.tvCurrentIntegral.setText(GeneralUtils.getInstence().formatAmount(result.getUserIntegral()))
+                mBinding.tvConsumeCount.setText(result.getConsumeNumber().toString())
+                if (result.getUserSex().equals("男")) {
+                    mBinding.ivUserSex.setImageResource(R.mipmap.iv_square_list_sex_boy)
+                }else if (result.getUserSex().equals("女")) {
+                    mBinding.ivUserSex.setImageResource(R.mipmap.iv_square_list_sex_girl)
+                }
+
+                if (isShowUserAmount) {
+                    mBinding.tvConsumeAmount.setText(GeneralUtils.getInstence().formatAmount(result.getCurrentAmount())+"元")
+                }
+                if (isShowTotalAmount) {
+                    mBinding.tvTotalAmount.setText(GeneralUtils.getInstence().formatAmount(result.getTotalAmount())+"元")
+                }
+                mBinding.tvTotalIntegral.setText(GeneralUtils.getInstence().formatAmount(result.getTotalIntegral()))
+                if (result.getUid() != 0) {
+                    getUserIntegralInfo(result.getUid())
+                }
+            }
+        }
     }
 
     private val mUserLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             if (it.resultCode==200) {
                 isRrfreshHomePage = true
-                getUserInfo()
+                mViewModel.queryVipUserInfo(vipUserId)
             }
         }
 
@@ -59,7 +91,7 @@ class UserDetailActivity:BaseActivity<ActivityUserDetailBinding>() {
         mBinding.ivEyeTotalStatus.setOnClickListener {
             isShowTotalAmount = !isShowTotalAmount
             if (isShowTotalAmount) {
-                mBinding.tvTotalAmount.setText(GeneralUtils.getInstence().formatAmount(vipUserInfo.totalAmount)+"元")
+                mBinding.tvTotalAmount.setText(GeneralUtils.getInstence().formatAmount(vipUserInfo.getTotalAmount())+"元")
                 mBinding.ivEyeTotalStatus.setImageResource(R.mipmap.amount_eye_show_icon)
             }else {
                 mBinding.tvTotalAmount.setText("******")
@@ -69,7 +101,7 @@ class UserDetailActivity:BaseActivity<ActivityUserDetailBinding>() {
         mBinding.ivEyeUserStatus.setOnClickListener {
             isShowUserAmount = !isShowUserAmount
             if (isShowUserAmount) {
-                mBinding.tvConsumeAmount.setText(GeneralUtils.getInstence().formatAmount(vipUserInfo.currentAmount)+"元")
+                mBinding.tvConsumeAmount.setText(GeneralUtils.getInstence().formatAmount(vipUserInfo.getCurrentAmount())+"元")
                 mBinding.ivEyeUserStatus.setImageResource(R.mipmap.amount_eye_show_icon)
             }else {
                 mBinding.tvConsumeAmount.setText("******")
@@ -83,12 +115,16 @@ class UserDetailActivity:BaseActivity<ActivityUserDetailBinding>() {
         }
 
         mBinding.rlChangeIntegral.setOnClickListener {
-            var title = vipUserInfo.userName + " "+vipUserInfo.phoneNumber
+            var title = vipUserInfo.getUserName() + " "+vipUserInfo.getPhoneNumber()
             XPopup.Builder(this)
                 .asCustom(ChangeIntegralDialog(this,title,vipUserId,object :OnIntegralChangeListener{
                     override fun onSuccess() {
                         setResult(200)
                         finish()
+                    }
+
+                    override fun onRepeatConfirm(type: Int, thisAmount: Float) {
+                        showRepeatConfirmDialog(vipUserId,title,type,thisAmount)
                     }
                 }))
                 .show()
@@ -96,23 +132,23 @@ class UserDetailActivity:BaseActivity<ActivityUserDetailBinding>() {
         mBinding.rlIntegralDetail.setOnClickListener {
             if (GeneralUtils.getInstence().onClickEnable()) {
                 val intent = Intent(this, IntegralDetailActivity::class.java)
-                intent.putExtra("vip_integral_uid",vipUserInfo.uid)
-                intent.putExtra("vip_integral_number",vipUserInfo.userIntegral)
-                intent.putExtra("vip_amount_number",vipUserInfo.currentAmount)
+                intent.putExtra("vip_integral_uid",vipUserInfo.getUid())
+                intent.putExtra("vip_integral_number",vipUserInfo.getUserIntegral())
+                intent.putExtra("vip_amount_number",vipUserInfo.getCurrentAmount())
                 startActivity(intent)
             }
         }
         mBinding.rlIntegralDuihuan.setOnClickListener {
             val intent = Intent(this, ConvertGoodsActivity::class.java)
             intent.putExtra(AppConstant.VIP_USER_ID,vipUserId)
-            intent.putExtra("vip_user_name",vipUserInfo.userName)
-            intent.putExtra("vip_phone_number",vipUserInfo.phoneNumber)
+            intent.putExtra("vip_user_name",vipUserInfo.getUserName())
+            intent.putExtra("vip_phone_number",vipUserInfo.getPhoneNumber())
             mUserLauncher.launch(intent)
         }
         mBinding.rlDuihuanDetail.setOnClickListener {
             val intent = Intent(this, ConvertDetailActivity::class.java)
             intent.putExtra(AppConstant.VIP_USER_ID,vipUserId)
-            intent.putExtra("vip_integral_uid",vipUserInfo.uid)
+            intent.putExtra("vip_integral_uid",vipUserInfo.getUid())
             startActivity(intent)
         }
 
@@ -155,63 +191,70 @@ class UserDetailActivity:BaseActivity<ActivityUserDetailBinding>() {
         }
     }
 
-    private fun getUserInfo() {
-        vipUserInfo = vipUserDao.queryById(vipUserId)
-        mBinding.tvUserName.setText(vipUserInfo.userName)
-        mBinding.tvPhoneNumber.setText(vipUserInfo.phoneNumber)
-        mBinding.tvRegisterTime.setText("注册时间:"+vipUserInfo.registerTime)
-        mBinding.tvCurrentIntegral.setText(GeneralUtils.getInstence().formatAmount(vipUserInfo.userIntegral))
-        mBinding.tvConsumeCount.setText(vipUserInfo.consumeNumber.toString())
-        if (vipUserInfo.userSex.equals("男")) {
-            mBinding.ivUserSex.setImageResource(R.mipmap.iv_square_list_sex_boy)
-        }else if (vipUserInfo.userSex.equals("女")) {
-            mBinding.ivUserSex.setImageResource(R.mipmap.iv_square_list_sex_girl)
-        }
-
-        if (isShowUserAmount) {
-            mBinding.tvConsumeAmount.setText(GeneralUtils.getInstence().formatAmount(vipUserInfo.currentAmount)+"元")
-        }
-        if (isShowTotalAmount) {
-            mBinding.tvTotalAmount.setText(GeneralUtils.getInstence().formatAmount(vipUserInfo.totalAmount)+"元")
-        }
-//        mBinding.tvConsumeAmount.setText(GeneralUtils.getInstence().formatAmount(vipUserInfo.currentAmount)+"元")
-        mBinding.tvTotalIntegral.setText(GeneralUtils.getInstence().formatAmount(vipUserInfo.totalIntegral))
-        var convertIntegral = 0f
-
-        val convertGoodsList = convertGoodsDao.queryByConvertGoodsUid(vipUserInfo.uid)
-        if (convertGoodsList!=null&&convertGoodsList.size!=0) {
-            for (index in 0 until convertGoodsList.size) {
-                val goodsInfo = convertGoodsList.get(index)
-                convertIntegral += goodsInfo.useIntegral
+    private fun getUserIntegralInfo(uid:Int) {
+        launchWithNotLoadingFlow({databaseRepository.getConvertGoodsDao().queryFormUid(uid)}) {
+            onSuccess = { convertGoodsList ->
+                var exchangeIntegral = 0f
+                if (convertGoodsList!=null&&convertGoodsList.size!=0) {
+                    for (index in 0 until convertGoodsList.size) {
+                        val goodsInfo = convertGoodsList.get(index)
+                        exchangeIntegral += goodsInfo.getUseIntegral()
+                    }
+                }
+                mBinding.tvDuihuanIntegral.setText(GeneralUtils.getInstence().formatAmount(exchangeIntegral)+"分")
+                mBinding.tvDuihuanCount.setText("("+convertGoodsList.size.toString()+"次)")
             }
         }
-        mBinding.tvDuihuanIntegral.setText(GeneralUtils.getInstence().formatAmount(convertIntegral)+"分")
-        mBinding.tvDuihuanCount.setText("("+convertGoodsList.size.toString()+"次)")
+    }
+
+    private fun showRepeatConfirmDialog(
+        vipUserId: Long,
+        title: String,
+        type: Int,
+        thisAmount: Float
+    ) {
+        XPopup.Builder(this)
+            .asCustom(ConsumeConfirmDialog(this,vipUserId,title,type,thisAmount,object : OnIntegralChangeListener {
+                override fun onSuccess() {
+                    setResult(200)
+                    finish()
+                }
+
+                override fun onRepeatConfirm(type: Int, thisAmount: Float) {
+
+                }
+            }))
+            .show()
     }
 
     private fun deleteVipUser(type:Int) {
         showLoadingDialog("正在删除...")
-        val consumeUserDao = DbVipUserHelper(this, DbUserConsumeInfo::class.java).userConsumeDao
-        consumeUserDao.deleteUidConsumeAll(vipUserInfo.uid)
-        convertGoodsDao.deleteUidGoodsAll(vipUserInfo.uid)
-        dismissLoadingDialog()
+        mViewModel.deleteUserConsumeData(vipUserInfo.getUid())
+        mViewModel.deleteUserConvertGoodsData(vipUserInfo.getUid())
         if (type==1) {
-            vipUserDao.delete(vipUserInfo)
-            ToastUtils.show("已删除")
+            mViewModel.deleteUserInfo(vipUserInfo)
+            mBinding.tvUserName.postDelayed({
+                dismissLoadingDialog()
+                ToastUtils.show("已删除")
+                setResult(200)
+                finish()
+            },1000)
         }else {
-            vipUserInfo.consumeTime = System.currentTimeMillis()
-            vipUserInfo.consumeNumber = 0
-            vipUserInfo.lastAmount = 0f
-            vipUserInfo.currentAmount = 0f
-            vipUserInfo.totalAmount = 0f
-            vipUserInfo.totalIntegral = 0f
-            vipUserInfo.userIntegral = 0f
-            vipUserDao.update(vipUserInfo)
-            ToastUtils.show("已清空")
+            vipUserInfo.setConsumeTime(System.currentTimeMillis())
+            vipUserInfo.setConsumeNumber(0)
+            vipUserInfo.setExchangeNumber(0f)
+            vipUserInfo.setCurrentAmount(0f)
+            vipUserInfo.setTotalAmount(0f)
+            vipUserInfo.setTotalIntegral(0f)
+            vipUserInfo.setUserIntegral(0f)
+            mViewModel.updateUserInfo(vipUserInfo)
+            mBinding.tvUserName.postDelayed({
+                dismissLoadingDialog()
+                ToastUtils.show("已清空")
+                setResult(200)
+                finish()
+            },1000)
         }
-
-        setResult(200)
-        finish()
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {

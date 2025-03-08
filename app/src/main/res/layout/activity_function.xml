@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".activity.FunctionActivity">
+
+    <include android:id="@+id/title" layout="@layout/common_title_layout"/>
+
+    <androidx.gridlayout.widget.GridLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginHorizontal="16dp"
+        app:columnCount="6"
+        app:rowCount="3">
+
+        <com.hjq.shape.layout.ShapeLinearLayout
+            android:id="@+id/sll_statistic_from"
+            android:layout_margin="5dp"
+            android:paddingVertical="15dp"
+            android:orientation="vertical"
+            app:layout_columnWeight="1"
+            app:layout_rowWeight="1"
+            app:shape_radius="10dp"
+            app:shape_solidColor="@color/white">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:src="@mipmap/fun_statistic_from_icon" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:paddingHorizontal="5dp"
+                android:text="营收统计"
+                android:textColor="#262C30"
+                android:textSize="14sp"
+                android:layout_marginTop="6dp"/>
+        </com.hjq.shape.layout.ShapeLinearLayout>
+
+        <com.hjq.shape.layout.ShapeLinearLayout
+            android:id="@+id/sll_convert_goods_table"
+            android:layout_margin="5dp"
+            android:paddingVertical="15dp"
+            android:orientation="vertical"
+            app:layout_columnWeight="1"
+            app:layout_rowWeight="1"
+            app:shape_radius="10dp"
+            app:shape_solidColor="@color/white">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:src="@mipmap/fun_convert_goods_table_icon" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:paddingHorizontal="5dp"
+                android:text="兑换明细表"
+                android:textColor="#262C30"
+                android:textSize="14sp"
+                android:layout_marginTop="6dp"/>
+        </com.hjq.shape.layout.ShapeLinearLayout>
+    </androidx.gridlayout.widget.GridLayout>
+</LinearLayout>

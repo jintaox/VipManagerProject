@@ -79,6 +79,21 @@
         app:layout_constraintLeft_toLeftOf="@id/item_tv_name"
         app:layout_constraintTop_toBottomOf="@id/item_tv_phone"/>
 
+    <com.hjq.shape.view.ShapeTextView
+        android:id="@+id/stv_revoke_record"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:shape_bottomLeftRadius="8dp"
+        app:shape_solidColor="#D4A35B"
+        android:paddingHorizontal="10dp"
+        android:paddingVertical="3dp"
+        android:textSize="@dimen/general_small_size"
+        android:textColor="@color/white"
+        android:gravity="center"
+        android:text="撤销记录"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
     <ImageView
         android:id="@+id/iv_next_icon"
         android:layout_width="15dp"
@@ -86,6 +101,7 @@
         android:scaleType="fitXY"
         android:src="@mipmap/item_next_icon"
         android:layout_marginRight="10dp"
+        app:layout_constraintVertical_bias="0.72"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@id/item_iv_head"
         app:layout_constraintBottom_toBottomOf="@id/item_iv_head"/>
@@ -97,6 +113,7 @@
         android:textColor="#555555"
         android:textSize="@dimen/general_big_size"
         android:layout_marginRight="5dp"
+        app:layout_constraintVertical_bias="0.65"
         app:layout_constraintRight_toLeftOf="@id/iv_next_icon"
         app:layout_constraintTop_toTopOf="@id/item_tv_name"
         app:layout_constraintBottom_toBottomOf="@id/item_recent_time"/>

@@ -88,35 +88,33 @@
             android:layout_marginRight="20dp"
             android:orientation="horizontal">
 
-            <com.hjq.shape.view.ShapeTextView
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/stv_cancel"
                 android:layout_width="0dp"
-                android:layout_height="35dp"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text="取消"
                 android:textColor="@color/white"
-                android:textSize="@dimen/general_middle_size"
-                app:shape_radius="6dp"
-                app:shape_solidColor="#A0A0A0" />
+                app:cornerRadius="6dp"
+                android:backgroundTint="#A0A0A0"/>
 
-            <com.hjq.shape.view.ShapeTextView
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/stv_confirm"
                 android:layout_width="0dp"
-                android:layout_height="35dp"
+                android:layout_height="wrap_content"
                 android:layout_marginLeft="6dp"
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text="确定"
                 android:textColor="@color/white"
-                android:textSize="@dimen/general_middle_size"
-                app:shape_radius="6dp"
-                app:shape_solidColor="#277F29" />
+                app:cornerRadius="6dp"
+                android:backgroundTint="#277F29"/>
         </LinearLayout>
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="15dp" />
+            android:layout_height="10dp" />
 
     </com.hjq.shape.layout.ShapeLinearLayout>
 

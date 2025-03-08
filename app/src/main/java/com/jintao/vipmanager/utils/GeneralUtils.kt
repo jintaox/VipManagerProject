@@ -36,7 +36,7 @@ class GeneralUtils{
     fun onClickEnable(): Boolean {
         var isFlag = false
         val currentTimeMillis = System.currentTimeMillis()
-        if (currentTimeMillis - startClickTime > 800) {
+        if (currentTimeMillis - startClickTime > 500) {
             startClickTime = currentTimeMillis
             isFlag = true
         }

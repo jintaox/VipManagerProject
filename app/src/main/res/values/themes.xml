@@ -49,4 +49,9 @@
         <item name="android:paddingStart">10dp</item>
         <item name="android:paddingEnd">10dp</item>
     </style>
+
+    <style name="MySpinnerWindowStyle">
+        <item name="android:windowEnterAnimation">@anim/spinner_anim_window_show</item>
+        <item name="android:windowExitAnimation">@anim/spinner_anim_window_dismiss</item>
+    </style>
 </resources>

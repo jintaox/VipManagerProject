@@ -1,5 +1,6 @@
 package com.jintao.vipmanager.utils;
 
+import android.content.Context;
 import android.os.Environment;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
@@ -27,34 +28,76 @@ public class StreamUtils {
         return sdcardDatabasePath;
     }
 
-    public static String readerFile(String path) {
-        File file = new File(path);
-        StringBuilder result = new StringBuilder();
-        try {
-            //构造一个BufferedReader类来读取文件
-            BufferedReader br = new BufferedReader(new FileReader(file));
-            String s = null;
-            //使用readLine方法，一次读一行
-            while ((s = br.readLine()) != null) {
-                result.append(System.lineSeparator() + s);
-            }
-            br.close();
-        } catch (Exception e) {
-            e.printStackTrace();
+    public static String getBackupFilePath(Context context) {
+        File saveAllFileDir = getSaveAllFileDir(context);
+        if (saveAllFileDir != null && saveAllFileDir.exists()) {
+            return saveAllFileDir.getPath() + File.separator + AppConfig.BACKUP_DATA_NAME;
         }
-        return result.toString();
+        return "";
+    }
+
+    public static File getSaveAllFileDir(Context context) {
+        File externalAllJsonDir = context.getExternalFilesDir("text");
+        if (externalAllJsonDir != null && externalAllJsonDir.exists()) {//先获取sd卡中自身文件目录
+            return externalAllJsonDir;
+        }else {//不存在，创建外部文件夹
+            boolean mkdirsAllJsonDir1 = externalAllJsonDir.mkdirs();
+            if (mkdirsAllJsonDir1) {//先sd卡文件目录创建失败，就获取内置存储的目录
+                return externalAllJsonDir;
+            }else {//创建失败，使用内置存储
+                return context.getFilesDir();
+            }
+        }
+    }
+
+    public static String readerFile(String filePath) {
+        File file = new File(filePath);
+        if (file==null||!file.exists()) {
+            return "";
+        }
+        try {
+            StringBuilder sb = new StringBuilder();
+            BufferedReader buffReader = new BufferedReader(new FileReader(file));
+            String line = "";
+            while((line = buffReader.readLine())!=null){
+                sb.append(line);
+            }
+            buffReader.close();
+            return sb.toString();
+        } catch (IOException e) {
+            return "";
+        }
     }
 
     public static void writeFile(String path, String data) {
         File file = new File(path);
         if (file.exists()) file.delete();
+        FileOutputStream fileOutputStream = null;
+        OutputStreamWriter outputStreamWriter = null;
+        BufferedWriter writer = null;
         try {
             file.createNewFile();
-            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file),"utf-8"));
+            fileOutputStream = new FileOutputStream(file);
+            outputStreamWriter = new OutputStreamWriter(fileOutputStream, "utf-8");
+            writer = new BufferedWriter(outputStreamWriter);
             writer.write(data);
-            writer.close();
+            writer.flush();
         } catch (IOException e) {
             e.printStackTrace();
+        }finally {
+            try {
+                if (writer!=null) {
+                    writer.close();
+                }
+                if (outputStreamWriter!=null) {
+                    outputStreamWriter.close();
+                }
+                if (fileOutputStream!=null) {
+                    fileOutputStream.close();
+                }
+            } catch (IOException e) {
+
+            }
         }
     }
     public static void copyFileStream(File source, File dest){

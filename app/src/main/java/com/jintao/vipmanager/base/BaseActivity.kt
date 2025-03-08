@@ -7,18 +7,16 @@ import android.view.MotionEvent
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.viewbinding.ViewBinding
-import com.jintao.vipmanager.dialog.LoadingDialog
-import com.jintao.vipmanager.utils.GeneralUtils
 import com.gyf.immersionbar.ImmersionBar
 import com.hjq.toast.ToastUtils
+import com.jintao.vipmanager.dialog.LoadingDialog
+import com.jintao.vipmanager.utils.GeneralUtils
 import com.jintao.vipmanager.utils.PermissionsUtil
-import com.lxj.xpopup.XPopup
-import com.lxj.xpopup.core.BasePopupView
 
-abstract class BaseActivity<T : ViewBinding>: AppCompatActivity() {
+abstract class BaseActivity<T : ViewBinding>: AppCompatActivity(), IUiView {
 
     lateinit var mBinding: T
-    private var loadingPopupView: BasePopupView? = null
+    private var loadingDialog: LoadingDialog? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,6 +25,7 @@ abstract class BaseActivity<T : ViewBinding>: AppCompatActivity() {
         mBinding = getViewBinding()
         setContentView(mBinding.root)
         initListener()
+        initObserve()
         initData()
     }
 
@@ -59,28 +58,21 @@ abstract class BaseActivity<T : ViewBinding>: AppCompatActivity() {
         return true
     }
 
+    abstract fun getViewBinding(): T
+    abstract fun initListener()
+    abstract fun initObserve()
     abstract fun initData()
 
-    abstract fun initListener()
-
-    abstract fun getViewBinding(): T
-
-    fun showLoadingDialog(text:String = "请稍等...") {
-        if (loadingPopupView==null||!loadingPopupView!!.isShow) {
-            loadingPopupView = XPopup.Builder(this)
-                .dismissOnBackPressed(false)
-                .dismissOnTouchOutside(false)
-                .autoFocusEditText(false)
-                .isRequestFocus(false)
-                .hasShadowBg(false)
-                .asCustom(LoadingDialog(this,text))
-                .show()
+    override fun showLoadingDialog(content:String) {
+        if (loadingDialog == null || !loadingDialog!!.isShowing()) {
+            loadingDialog = LoadingDialog(this, content)
+            loadingDialog!!.show()
         }
     }
 
-    fun dismissLoadingDialog() {
-        loadingPopupView?.let {
-            it.dismiss()
+    override fun dismissLoadingDialog() {
+        if (!isFinishing && loadingDialog != null && loadingDialog!!.isShowing) {
+            loadingDialog!!.dismiss()
         }
     }
 

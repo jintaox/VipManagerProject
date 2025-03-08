@@ -5,6 +5,7 @@ import android.content.Context
 import android.graphics.Color
 import com.hjq.http.EasyConfig
 import com.hjq.toast.ToastUtils
+import com.jintao.vipmanager.bean.UserOperateRecordInfo
 import com.jintao.vipmanager.network.HttpServerUrl
 import com.jintao.vipmanager.network.RequestHandler
 import com.lxj.xpopup.XPopup
@@ -24,6 +25,8 @@ class MyApplication:Application() {
         var todayConsume = 0f
         var todayCount = 0
         var cacheHomeTime = 0L
+        var uploadBackupCount = 0
+        var cacheOperateRecordList = mutableListOf<UserOperateRecordInfo>()
     }
 
     override fun onCreate() {
@@ -41,7 +44,7 @@ class MyApplication:Application() {
         val okHttpClient = OkHttpClient.Builder()
             .readTimeout(6, TimeUnit.SECONDS)
             .writeTimeout(6, TimeUnit.SECONDS)
-            .connectTimeout(15, TimeUnit.SECONDS)
+            .connectTimeout(6, TimeUnit.SECONDS)
             .build()
 
         EasyConfig.with(okHttpClient)

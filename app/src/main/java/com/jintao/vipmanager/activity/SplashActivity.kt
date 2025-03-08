@@ -49,6 +49,10 @@ class SplashActivity : BaseActivity<ActivitySplashBinding>() {
 
     }
 
+    override fun initObserve() {
+
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         if (MESSAGE_CODE != 0) {

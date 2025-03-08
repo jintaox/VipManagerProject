@@ -52,43 +52,40 @@
             android:layout_marginRight="20dp"
             android:orientation="horizontal">
 
-            <com.hjq.shape.view.ShapeTextView
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/stv_cancel"
                 android:layout_width="0dp"
-                android:layout_height="35dp"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text="取消"
                 android:textColor="@color/white"
-                android:textSize="@dimen/general_middle_size"
-                app:shape_radius="6dp"
-                app:shape_solidColor="#A0A0A0" />
+                app:cornerRadius="6dp"
+                android:backgroundTint="#A0A0A0"/>
 
-            <com.hjq.shape.view.ShapeTextView
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/stv_reduce_number"
                 android:layout_width="0dp"
-                android:layout_height="35dp"
+                android:layout_height="wrap_content"
                 android:layout_marginLeft="6dp"
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text="减去"
                 android:textColor="@color/white"
-                android:textSize="@dimen/general_middle_size"
-                app:shape_radius="6dp"
-                app:shape_solidColor="#FF5E00" />
+                app:cornerRadius="6dp"
+                android:backgroundTint="#FF5E00"/>
 
-            <com.hjq.shape.view.ShapeTextView
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/stv_add_number"
                 android:layout_width="0dp"
-                android:layout_height="35dp"
+                android:layout_height="wrap_content"
                 android:layout_marginLeft="6dp"
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text="增加"
                 android:textColor="@color/white"
-                android:textSize="@dimen/general_middle_size"
-                app:shape_radius="6dp"
-                app:shape_solidColor="#277F29" />
+                app:cornerRadius="6dp"
+                android:backgroundTint="#277F29"/>
         </LinearLayout>
 
         <View
